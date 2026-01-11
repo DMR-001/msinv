@@ -40,20 +40,27 @@ const products = [
 async function seed() {
     try {
         const client = await pool.connect();
+        console.log("Connected to DB.");
 
-        console.log("Seeding products...");
         for (const p of products) {
-            await client.query(
-                'INSERT INTO products (name, category, price, description, image_url) VALUES ($1, $2, $3, $4, $5)',
-                [p.name, p.category, p.price, p.description, p.image_url]
-            );
+            // Check if exists
+            const check = await client.query('SELECT id FROM products WHERE name = $1', [p.name]);
+            if (check.rows.length === 0) {
+                await client.query(
+                    'INSERT INTO products (name, category, price, description, image_url) VALUES ($1, $2, $3, $4, $5)',
+                    [p.name, p.category, p.price, p.description, p.image_url]
+                );
+                console.log(`Added: ${p.name}`);
+            } else {
+                console.log(`Skipped (Exists): ${p.name}`);
+            }
         }
 
         console.log("Seeding complete!");
         client.release();
         process.exit(0);
     } catch (err) {
-        console.error(err);
+        console.error("Seeding error:", err);
         process.exit(1);
     }
 }

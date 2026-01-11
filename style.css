@@ -115,6 +115,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap; /* Allow wrapping */
 }
 
 .logo {
@@ -125,7 +126,7 @@ nav {
 
 .nav-links {
     display: flex;
-    gap: 40px;
+    gap: 25px; /* Reduced from 40px */
 }
 
 .nav-links a {
