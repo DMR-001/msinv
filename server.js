@@ -24,13 +24,9 @@ const generateToken = (user) => {
     return jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: '24h' });
 };
 
-// Check DB Connection
-pool.connect((err, client, release) => {
-    if (err) {
-        return console.error('Error acquiring client', err.stack);
-    }
-    console.log('Connected to Neon DB');
-    release();
+// Test Route to verify server is running
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', db_configured: !!process.env.DATABASE_URL });
 });
 
 // --- API Routes ---
