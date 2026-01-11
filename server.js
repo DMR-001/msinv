@@ -139,7 +139,12 @@ app.post('/api/products', async (req, res) => {
     }
 });
 
-// Start Server
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+// Export for Vercel
+module.exports = app;
+
+// Start Server if running directly
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}
