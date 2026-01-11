@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Store | MS Innovatics</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">MS <span class="text-gradient">Innovatics</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="store.html" class="active">Project Store</a></li>
+                    <li><a href="custom.html">Custom Projects</a></li>
+                </ul>
+                <div class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="section-padding" style="padding-bottom: 20px;">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h1>Ready-Made <span class="text-gradient">Projects</span></h1>
+                <p>High-quality, documented projects ready for learning and submission.</p>
+
+                <!-- Search Bar -->
+                <div style="max-width: 500px; margin: 30px auto 0; position: relative;">
+                    <input type="text" id="searchInput" placeholder="Search projects..."
+                        style="width: 100%; padding: 15px 20px; border-radius: 50px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; outline: none; padding-right: 50px;">
+                    <button onclick="loadStore()"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: var(--primary); border: none; width: 35px; height: 35px; border-radius: 50%; color: white; cursor: pointer;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Store Grid -->
+    <section class="section-padding">
+        <div class="container">
+            <div id="products-grid" class="features-grid">
+                <!-- Products loaded via JS -->
+                <div style="grid-column: 1/-1; text-align: center;">
+                    <i class="fas fa-circle-notch fa-spin fa-2x" style="color: var(--primary);"></i>
+                    <p>Loading projects...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2026 MS Innovatics. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const API_URL_STORE = 'http://localhost:3001/api';
+
+        async function loadStore() {
+            const search = document.getElementById('searchInput').value;
+            let url = `${API_URL_STORE}/products`;
+            if (search) url += `?search=${search}`;
+
+            try {
+                const res = await fetch(url);
+                const products = await res.json();
+                const grid = document.getElementById('products-grid');
+                grid.innerHTML = '';
+
+                if (products.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted);">No projects found matching your search.</p>';
+                    return;
+                }
+
+                products.forEach(p => {
+                    // Choose icon based in category
+                    let icon = 'fa-code';
+                    let color = 'white';
+                    if (p.category === 'Web') { icon = 'fa-laptop-code'; color = 'var(--primary)'; }
+                    if (p.category === 'IoT') { icon = 'fa-microchip'; color = '#ff00ff'; }
+                    if (p.category === 'Python') { icon = 'fa-snake'; color = 'orange'; }
+
+                    const html = `
+                    <div class="glass-card fade-in visible">
+                        <div style="height: 150px; background: #2a2d45; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas ${icon} fa-3x" style="color: ${color};"></i>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>${p.name}</h3>
+                            <span style="background: ${color}; opacity: 0.8; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; color: black;">${p.category}</span>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 10px 0 20px;">
+                            ${p.description}
+                        </p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.2rem; font-weight: bold; color: var(--accent);">$${p.price}</span>
+                            <button class="btn btn-primary" style="padding: 8px 20px; font-size: 0.9rem;" onclick="Cart.add({id: ${p.id}, name: '${p.name}', price: ${p.price}})">Add to Cart</button>
+                        </div>
+                    </div>
+                    `;
+                    grid.innerHTML += html;
+                });
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('products-grid').innerHTML = '<p style="color: red;">Failed to load products. Ensure backend is running.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStore);
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadStore();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | MS Innovatics</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">MS <span class="text-gradient">Innovatics</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="store.html">Project Store</a></li>
+                    <li><a href="custom.html">Custom Projects</a></li>
+                </ul>
+                <div class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Cart Section -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <h2>Your <span class="text-gradient">Cart</span></h2>
+            </div>
+
+            <div id="cart-items"
+                style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+                <!-- Items inserted via JS -->
+                <p style="text-align: center; color: var(--text-muted);">Your cart is empty.</p>
+            </div>
+
+            <div id="cart-summary" class="glass-card fade-in"
+                style="max-width: 900px; margin: 40px auto 0; padding: 25px; display: none; text-align: right;">
+                <h3 style="margin-bottom: 20px;">Total: <span id="cart-total" style="color: var(--accent);">$0</span>
+                </h3>
+                <a href="checkout.html" class="btn btn-primary">Proceed to Checkout <i
+                        class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; 2026 MS Innovatics. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function renderCart() {
+            const cartItems = Cart.getCart();
+            const container = document.getElementById('cart-items');
+            const summary = document.getElementById('cart-summary');
+            const totalEl = document.getElementById('cart-total');
+
+            if (cartItems.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px; background: rgba(255,255,255,0.02); border-radius: 10px;">Your cart is currently empty. <a href="store.html" style="color: var(--accent);">Go Shopping</a></p>';
+                summary.style.display = 'none';
+                return;
+            }
+
+            let total = 0;
+            container.innerHTML = '';
+
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
+                container.innerHTML += `
+                    <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between; padding: 20px; flex-wrap: wrap; gap: 20px;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <h4 style="margin-bottom: 5px;">${item.name}</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">$${item.price} x ${item.quantity}</p>
+                        </div>
+                        <div style="text-align: right;">
+                             <p style="font-size: 1.1rem; font-weight: bold; color: var(--text-main); margin-bottom: 10px;">$${itemTotal}</p>
+                             <button onclick="Cart.remove(${item.id})" style="background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 5px 10px; border-radius: 4px; cursor: pointer; transition: 0.3s; font-size: 0.8rem;">Remove</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            totalEl.innerText = '$' + total;
+            summary.style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', renderCart);
+    </script>
+</body>
+
+</html>

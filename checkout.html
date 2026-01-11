@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | MS Innovatics</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">MS <span class="text-gradient">Innovatics</span></a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="store.html">Project Store</a></li>
+                    <li><a href="custom.html">Custom Projects</a></li>
+                </ul>
+                <div class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Checkout Section -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-title">
+                <h2>Secure <span class="text-gradient">Checkout</span></h2>
+            </div>
+
+            <div class="checkout-grid"
+                style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; max-width: 1100px; margin: 0 auto;">
+
+                <!-- Billing Details -->
+                <div class="glass-card fade-in">
+                    <h3
+                        style="margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                        Billing Details</h3>
+                    <form id="checkoutForm">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--text-muted);">Full
+                                Name</label>
+                            <input type="text" id="billingName" required class="form-input"
+                                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--text-muted);">Email
+                                Address</label>
+                            <input type="email" id="billingEmail" required class="form-input"
+                                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: var(--text-muted);">Card Number
+                                (Simulated)</label>
+                            <input type="text" placeholder="XXXX XXXX XXXX XXXX" required class="form-input"
+                                style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <label
+                                    style="display: block; margin-bottom: 8px; color: var(--text-muted);">Expiry</label>
+                                <input type="text" placeholder="MM/YY" required class="form-input"
+                                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; color: var(--text-muted);">CVV</label>
+                                <input type="text" placeholder="123" required class="form-input"
+                                    style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: white;">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="glass-card fade-in" style="height: fit-content;">
+                    <h3
+                        style="margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+                        Order Summary</h3>
+                    <div id="order-items" style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                        <!-- Items -->
+                    </div>
+                    <div
+                        style="border-top: 1px solid rgba(255,255,255,0.05); paddingTop: 15px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Total</span>
+                        <span id="order-total"
+                            style="font-size: 1.2rem; font-weight: bold; color: var(--accent);">$0</span>
+                    </div>
+                    <button onclick="processPayment()" class="btn btn-primary"
+                        style="width: 100%; margin-top: 25px; text-align: center;">Pay & Complete Order</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Processing Modal (Hidden by default) -->
+    <div id="paymentModal"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="glass-card" style="text-align: center; padding: 40px; max-width: 400px;">
+            <i class="fas fa-circle-notch fa-spin fa-3x" style="color: var(--primary); margin-bottom: 20px;"></i>
+            <h3>Processing Payment...</h3>
+            <p style="color: var(--text-muted);">Please wait while we verify your details.</p>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="glass-card" style="text-align: center; padding: 40px; max-width: 400px;">
+            <i class="fas fa-check-circle fa-3x" style="color: #10b981; margin-bottom: 20px;"></i>
+            <h3>Payment Successful!</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Thank you for your purchase. You can download your
+                projects from the dashboard.</p>
+            <a href="index.html" class="btn btn-primary">Return Home</a>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check Auth
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = Auth.getUser();
+            if (!user) {
+                alert('Please login to checkout.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Auto fill
+            document.getElementById('billingName').value = user.name;
+            document.getElementById('billingEmail').value = user.email;
+
+            // Render Summary
+            const cart = Cart.getCart();
+            if (cart.length === 0) window.location.href = 'store.html';
+
+            let total = 0;
+            const container = document.getElementById('order-items');
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                container.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>$${item.price * item.quantity}</span>
+                    </div>
+                 `;
+            });
+            document.getElementById('order-total').innerText = '$' + total;
+        });
+
+        function processPayment() {
+            // Basic validation
+            if (!document.getElementById('checkoutForm').checkValidity()) {
+                alert('Please fill in all billing details.');
+                return;
+            }
+
+            // Show Loading
+            document.getElementById('paymentModal').style.display = 'flex';
+
+            // Simulate delay
+            setTimeout(() => {
+                document.getElementById('paymentModal').style.display = 'none';
+                document.getElementById('successModal').style.display = 'flex';
+                Cart.clear();
+            }, 2500);
+        }
+    </script>
+</body>
+
+</html>
